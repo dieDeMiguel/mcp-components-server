@@ -1,8 +1,83 @@
-# xmcp Application
+# Components MCP Server
+
+MCP server exposing MercadoLibre UI component catalog via HTTP endpoints for AI tools integration.
+
+## What it does
+
+This repository provides a Model Context Protocol (MCP) server that exposes UI component catalog through HTTP endpoints. It allows AI tools and other services to query component information, including props, variants, styling, and usage details.
+
+## Production URL
+
+**Live Endpoint:** `https://meli-xmcp-poc.vercel.app/mcp`
+
+## How to Consume
+
+### Protocol
+
+JSON-RPC 2.0 over HTTP POST
+
+### Required Headers
+
+- `Content-Type: application/json`
+- `Accept: application/json`
+
+### Available Tools
+
+#### 1\. list_components
+
+Get all components with optional filtering
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "method": "tools/call",
+  "params": {
+    "name": "list_components",
+    "arguments": {
+      "query": "button",
+      "tags": ["interactive"],
+      "packageFilter": "@meli/ui"
+    }
+  }
+}
+```
+
+#### 2\. get_component
+
+Get detailed component specification
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "2", 
+  "method": "tools/call",
+  "params": {
+    "name": "get_component",
+    "arguments": {
+      "name": "Button",
+      "variant": "primary"
+    }
+  }
+}
+```
+
+### Integration Options
+
+- Direct HTTP calls from any service
+- MCP client libraries (Cursor, Claude Desktop)
+- Custom AI tool integrations
+- Component documentation generators
+
+### Response Format
+
+MCP-compatible content array with JSON text payloads containing component metadata, props, variants, and usage information.
+
+## Development
 
 This project was created with [create-xmcp-app](https://github.com/basementstudio/xmcp).
 
-## Getting Started
+### Getting Started
 
 First, run the development server:
 
@@ -16,7 +91,7 @@ pnpm dev
 
 This will start the MCP server with the selected transport method.
 
-## Project Structure
+### Project Structure
 
 This project uses the structured approach where tools are automatically discovered from the `src/tools` directory. Each tool is defined in its own file with the following structure:
 
@@ -50,7 +125,7 @@ export default async function add({ a, b }: InferSchema<typeof schema>) {
 }
 ```
 
-## Adding New Tools
+### Adding New Tools
 
 To add a new tool:
 
@@ -59,7 +134,7 @@ To add a new tool:
 3. Export a `metadata` object with tool information
 4. Export a default function that implements the tool logic
 
-## Building for Production
+### Building for Production
 
 To build your project for production:
 
@@ -73,7 +148,7 @@ pnpm build
 
 This will compile your TypeScript code and output it to the `dist` directory.
 
-## Running the Server
+### Running the Server
 
 You can run the server for the transport built with:
 
