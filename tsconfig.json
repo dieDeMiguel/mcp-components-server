@@ -6,10 +6,12 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "resolveJsonModule": true
   },
   "include": [
     "xmcp-env.d.ts",
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/**/*.json"
   ]
 }
