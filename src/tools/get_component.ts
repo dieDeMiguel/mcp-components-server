@@ -41,12 +41,18 @@ export default function getComponentTool({
       };
     }
     
-    // If a specific variant is requested, we could filter/modify the component
-    // For now, we return the full component spec
+    // Format for VCP compatibility - normalized component structure
     const result = {
       component: {
-        ...component,
-        // If variant is specified, we could add variant-specific information here
+        name: component.name,
+        package: component.package,
+        version: component.version,
+        description: component.description,
+        language: component.language,
+        style: component.style,
+        props: component.props,
+        ...(component.variants && { variants: component.variants }),
+        code: component.code,
         ...(variant && { selectedVariant: variant }),
       },
     };

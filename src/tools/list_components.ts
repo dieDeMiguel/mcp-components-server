@@ -30,13 +30,11 @@ export default function listComponents({
   try {
     const components = findComponents(query, tags, packageFilter);
     
+    // Format for VCP compatibility - only name, description, package
     const items = components.map(comp => ({
       name: comp.name,
       description: comp.description,
       package: comp.package,
-      version: comp.version,
-      style: comp.style,
-      tags: comp.tags,
     }));
     
     return {
@@ -45,7 +43,6 @@ export default function listComponents({
           type: "text",
           text: JSON.stringify({
             items,
-            total: items.length,
           }, null, 2),
         },
       ],
@@ -58,7 +55,6 @@ export default function listComponents({
           text: JSON.stringify({
             error: error instanceof Error ? error.message : "Unknown error",
             items: [],
-            total: 0,
           }, null, 2),
         },
       ],

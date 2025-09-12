@@ -2,135 +2,133 @@
   "components": [
     {
       "name": "Button",
-      "package": "@meli/ui",
-      "version": "2.1.0",
-      "description": "Primary action button component with multiple variants and sizes",
+      "package": "@andes/button",
+      "version": "9.0.0",
+      "description": "Action trigger with various visual states, maintaining brand identity",
       "language": "tsx",
-      "style": { "type": "scss", "entry": "styles/button.scss" },
+      "style": { 
+        "type": "scss", 
+        "entries": ["@andes/button/index"] 
+      },
       "props": [
-        {
-          "name": "variant",
-          "type": "'primary' | 'secondary' | 'tertiary' | 'danger' | 'success'",
-          "required": false,
-          "default": "primary",
-          "description": "Visual variant of the button"
-        },
-        {
-          "name": "size",
-          "type": "'xs' | 'sm' | 'md' | 'lg' | 'xl'",
-          "required": false,
-          "default": "md",
-          "description": "Size of the button"
-        },
         {
           "name": "children",
           "type": "ReactNode",
           "required": true,
-          "description": "Button content"
+          "description": "Button content - text or complex content including icons"
+        },
+        {
+          "name": "hierarchy",
+          "type": "'loud' | 'quiet' | 'mute' | 'transparent'",
+          "required": false,
+          "default": "loud",
+          "description": "Style hierarchy of the button"
+        },
+        {
+          "name": "size",
+          "type": "'small' | 'medium' | 'large'",
+          "required": false,
+          "default": "large",
+          "description": "Size of the button element"
         },
         {
           "name": "disabled",
           "type": "boolean",
           "required": false,
           "default": false,
-          "description": "Whether the button is disabled"
+          "description": "Whether the button should be disabled"
         },
         {
           "name": "loading",
           "type": "boolean",
           "required": false,
           "default": false,
-          "description": "Whether the button is in loading state"
+          "description": "Shows loading state with progress indicator circular component"
+        },
+        {
+          "name": "fullWidth",
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "Whether the button should use full available width"
         },
         {
           "name": "onClick",
-          "type": "() => void",
+          "type": "function(event)",
           "required": false,
-          "description": "Click handler"
+          "description": "Callback function called when button is clicked"
         }
       ],
       "variants": [
         {
           "name": "primary",
-          "description": "Primary action button with brand colors",
-          "props": { "variant": "primary", "size": "md" }
+          "description": "Primary action button with loud hierarchy",
+          "props": { "hierarchy": "loud", "size": "large" }
         },
         {
-          "name": "secondary",
-          "description": "Secondary action button with subtle styling",
-          "props": { "variant": "secondary", "size": "md" }
+          "name": "secondary", 
+          "description": "Secondary action button with quiet hierarchy",
+          "props": { "hierarchy": "quiet", "size": "large" }
         }
       ],
-      "code": "",
-      "assets": [],
+      "code": "import { Button } from '@andes/button';\n\nexport function BasicButton() {\n  return <Button hierarchy=\"loud\">Sign up</Button>;\n}",
       "tags": ["button", "action", "form", "interactive"],
-      "dependencies": ["clsx"]
+      "dependencies": ["@andes/button"]
     },
     {
-      "name": "Card",
-      "package": "@meli/ui", 
-      "version": "2.1.0",
-      "description": "Flexible card container component for displaying content",
+      "name": "Badge",
+      "package": "@andes/badge",
+      "version": "9.0.0",
+      "description": "Small indicator for statuses, counts, or new content",
       "language": "tsx",
-      "style": { "type": "css", "entry": "Card.module.css" },
+      "style": {
+        "type": "scss",
+        "entries": ["@andes/badge/index"]
+      },
       "props": [
         {
           "name": "children",
           "type": "ReactNode",
           "required": true,
-          "description": "Card content"
+          "description": "Badge content"
         },
         {
           "name": "variant",
-          "type": "'default' | 'outlined' | 'elevated'",
+          "type": "'default' | 'success' | 'warning' | 'error'",
           "required": false,
           "default": "default",
-          "description": "Visual variant of the card"
+          "description": "Visual variant of the badge"
         },
         {
-          "name": "padding",
-          "type": "'sm' | 'md' | 'lg'",
+          "name": "size",
+          "type": "'small' | 'medium'",
           "required": false,
-          "default": "md",
-          "description": "Internal padding"
-        },
-        {
-          "name": "clickable",
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "Whether the card is clickable"
-        },
-        {
-          "name": "onClick",
-          "type": "() => void",
-          "required": false,
-          "description": "Click handler"
+          "default": "medium",
+          "description": "Size of the badge"
         }
       ],
       "variants": [
         {
           "name": "default",
-          "description": "Standard card with subtle border",
-          "props": { "variant": "default", "padding": "md" }
+          "description": "Standard badge for general use",
+          "props": { "variant": "default", "size": "medium" }
         },
         {
-          "name": "elevated",
-          "description": "Card with shadow elevation",
-          "props": { "variant": "elevated", "padding": "md" }
+          "name": "notification",
+          "description": "Badge for notifications and alerts",
+          "props": { "variant": "error", "size": "small" }
         }
       ],
-      "code": "",
-      "assets": [],
-      "tags": ["card", "container", "layout"],
-      "dependencies": ["clsx"]
+      "code": "import { Badge } from '@andes/badge';\n\nexport function StatusBadge() {\n  return <Badge variant=\"success\">Active</Badge>;\n}",
+      "tags": ["badge", "indicator", "status", "notification"],
+      "dependencies": ["@andes/badge"]
     }
   ],
   "metadata": {
-    "version": "1.0.0",
-    "lastUpdated": "2025-01-10T10:00:00Z",
+    "version": "2.0.0",
+    "lastUpdated": "2025-01-12T10:00:00Z",
     "totalComponents": 2,
-    "packages": ["@meli/ui"],
-    "tags": ["button", "card", "action", "form", "layout"]
+    "packages": ["@andes/button", "@andes/badge"],
+    "tags": ["button", "badge", "action", "indicator", "form", "interactive", "status", "notification"]
   }
 }
