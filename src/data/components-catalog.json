@@ -55,6 +55,55 @@
           "type": "function(event)",
           "default": "undefined",
           "required": false
+        },
+        {
+          "name": "backgroundType",
+          "description": "Determines the background type where the button is placed, used when placed over colored surfaces",
+          "type": "'default' | 'complexBackground'",
+          "default": "'default'",
+          "required": false
+        },
+        {
+          "name": "className",
+          "description": "Custom CSS class for additional styling",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "href",
+          "description": "Location where to point the button when used as link",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "id",
+          "description": "Unique identifier for the button",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "srAnnouncement",
+          "description": "Screen reader label for spinner when loading is active",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "srLabel",
+          "description": "Accessible label for screen readers",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "type",
+          "description": "Type attribute for button native element",
+          "type": "'button' | 'submit' | 'reset' | string",
+          "default": "'button'",
+          "required": false
         }
       ],
       "size_specifications": {
@@ -148,6 +197,436 @@
         {
           "title": "ButtonText with Icon",
           "code": "import { Button, ButtonText } from '@andes/button';\n\n<Button>\n  <IconComponent />\n  <ButtonText>Button Label</ButtonText>\n</Button>"
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "variant": "DropdownButton",
+      "description": "Button component that opens a dropdown menu with list items. Supports keyboard navigation and accessibility features.",
+      "import": "import { DropdownButton } from '@andes/button';",
+      "styles": ["@import '@andes/button/index';", "@import '@andes/list/base';", "@import '@andes/floating-menu/base';"],
+      "props": [
+        {
+          "name": "children",
+          "description": "Button text content",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "listContent",
+          "description": "Array of menu items with title, description, href, onClick properties",
+          "type": "Array<{title: string, description?: string, href?: string, onClick?: function}>",
+          "default": "undefined",
+          "required": true
+        },
+        {
+          "name": "className",
+          "description": "Custom CSS class",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "dialogSrLabel",
+          "description": "Accessible label for the dropdown menu dialog",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "disabled",
+          "description": "Whether the dropdown button should be disabled",
+          "type": "boolean",
+          "default": "false",
+          "required": false
+        },
+        {
+          "name": "fullWidth",
+          "description": "Whether button should use full available width",
+          "type": "boolean",
+          "default": "false",
+          "required": false
+        },
+        {
+          "name": "hierarchy",
+          "description": "Button style hierarchy",
+          "type": "'loud' | 'quiet'",
+          "default": "'loud'",
+          "required": false
+        },
+        {
+          "name": "id",
+          "description": "Unique identifier",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "menuWidth",
+          "description": "Width of the dropdown menu",
+          "type": "number | string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "side",
+          "description": "Menu placement relative to button",
+          "type": "'bottom' | 'bottom-start' | 'bottom-end' | 'top' | 'top-start' | 'top-end' | 'left' | 'left-start' | 'left-end' | 'right' | 'right-start' | 'right-end'",
+          "default": "'bottom'",
+          "required": false
+        },
+        {
+          "name": "size",
+          "description": "Size of the dropdown button",
+          "type": "'medium' | 'large'",
+          "default": "'large'",
+          "required": false
+        },
+        {
+          "name": "srLabel",
+          "description": "Screen reader label for the trigger button",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        }
+      ],
+      "size_specifications": {
+        "component_heights": {
+          "medium": "32px",
+          "large": "48px"
+        },
+        "layout": {
+          "display": "inline-block",
+          "chevron_icon": "Includes dropdown chevron indicator",
+          "direction": "Button with chevron icon, opens floating menu below"
+        }
+      },
+      "notes": [
+        "Integrates with floating-menu component for positioning",
+        "Supports keyboard navigation (Arrow keys, Enter, Escape)",
+        "Menu items can have href links or onClick handlers",
+        "Accessible menu dialog with proper ARIA attributes",
+        "Only supports medium and large sizes"
+      ],
+      "data_attributes": [
+        "aria-disabled for disabled state",
+        "role and accessibility attributes for screen readers"
+      ],
+      "examples": [
+        {
+          "title": "Basic Dropdown",
+          "code": "import { DropdownButton } from '@andes/button';\n\nconst options = [\n  { title: 'Option 1', onClick: () => {} },\n  { title: 'Option 2', href: '/link' }\n];\n\n<DropdownButton listContent={options}>Edit</DropdownButton>"
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "variant": "SplitButton",
+      "description": "Button component with a primary action and a secondary dropdown menu for additional actions.",
+      "import": "import { SplitButton } from '@andes/button';",
+      "styles": ["@import '@andes/button/index';", "@import '@andes/list/base';", "@import '@andes/floating-menu/base';"],
+      "props": [
+        {
+          "name": "children",
+          "description": "Primary button text content",
+          "type": "string",
+          "default": "undefined",
+          "required": true
+        },
+        {
+          "name": "listContent",
+          "description": "Array of secondary menu items",
+          "type": "Array<{title: string, href?: string, onClick?: function}>",
+          "default": "undefined",
+          "required": true
+        },
+        {
+          "name": "className",
+          "description": "Custom CSS class",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "dialogSrLabel",
+          "description": "Accessible label for menu dialog",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "hierarchy",
+          "description": "Button style hierarchy",
+          "type": "'loud' | 'quiet'",
+          "default": "'loud'",
+          "required": false
+        },
+        {
+          "name": "id",
+          "description": "Unique identifier",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "onClick",
+          "description": "Callback function for primary button action",
+          "type": "function(event)",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "side",
+          "description": "Menu placement relative to button",
+          "type": "'bottom' | 'bottomRight' | 'top' | 'topRight'",
+          "default": "'bottomRight'",
+          "required": false
+        },
+        {
+          "name": "srLabel",
+          "description": "Screen reader label for the trigger button",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        }
+      ],
+      "size_specifications": {
+        "layout": {
+          "display": "inline-flex",
+          "structure": "Primary button + separator + chevron dropdown",
+          "direction": "Two-part button with primary action left, dropdown right"
+        }
+      },
+      "notes": [
+        "Combines primary action with secondary menu options",
+        "Visual separator between main button and dropdown trigger",
+        "Supports both loud and quiet hierarchies",
+        "Menu positioning optimized for split button layout"
+      ],
+      "data_attributes": [
+        "aria-disabled for disabled state",
+        "role and accessibility attributes for screen readers"
+      ],
+      "examples": [
+        {
+          "title": "Split Button",
+          "code": "import { SplitButton } from '@andes/button';\n\nconst options = [\n  { title: 'Secondary Action 1', onClick: () => {} },\n  { title: 'Secondary Action 2', onClick: () => {} }\n];\n\n<SplitButton listContent={options} onClick={() => console.log('Primary action')}>Primary Action</SplitButton>"
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "variant": "ProgressButton",
+      "description": "Button component with built-in progress states for multi-step operations, showing loading and completion states.",
+      "import": "import { ProgressButton } from '@andes/button';",
+      "styles": ["@import '@andes/button/index';"],
+      "props": [
+        {
+          "name": "children",
+          "description": "Button content for default state",
+          "type": "ReactNode",
+          "default": "undefined",
+          "required": true
+        },
+        {
+          "name": "className",
+          "description": "Custom CSS class",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "hierarchy",
+          "description": "Button style hierarchy",
+          "type": "'loud' | 'quiet'",
+          "default": "'loud'",
+          "required": false
+        },
+        {
+          "name": "id",
+          "description": "Unique identifier",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "loading",
+          "description": "Shows progress state with custom label",
+          "type": "boolean",
+          "default": "false",
+          "required": false
+        },
+        {
+          "name": "onClick",
+          "description": "Callback function called when button is clicked",
+          "type": "function(event)",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "progressLabel",
+          "description": "Custom content when loading is active",
+          "type": "ReactNode",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "progressSrAnnouncement",
+          "description": "Screen reader announcement for progress changes",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "timeout",
+          "description": "Timeout in milliseconds to delay finished state",
+          "type": "number",
+          "default": "1000",
+          "required": false
+        }
+      ],
+      "size_specifications": {
+        "layout": {
+          "display": "block",
+          "states": "default → loading → finished",
+          "direction": "Full-width button with state transitions"
+        }
+      },
+      "notes": [
+        "Designed for full-width usage in forms and processes",
+        "Automatic state management with timeout control",
+        "Custom progress labels for better user feedback",
+        "Accessibility announcements for state changes",
+        "Visual transitions between states with animations"
+      ],
+      "data_attributes": [
+        "aria-disabled for disabled state",
+        "aria-live for progress announcements",
+        "data-progress-state for current state"
+      ],
+      "examples": [
+        {
+          "title": "Progress Button",
+          "code": "import { ProgressButton } from '@andes/button';\n\n<ProgressButton\n  loading={isLoading}\n  progressLabel=\"Processing...\"\n  progressSrAnnouncement=\"Please wait, processing your request\"\n  onClick={handleSubmit}\n>\n  Submit\n</ProgressButton>"
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "variant": "FloatingActionButton",
+      "description": "Circular floating action button with icon, supporting expanded and collapsed states for primary actions.",
+      "import": "import { FloatingActionButton } from '@andes/button';",
+      "styles": ["@import '@andes/button/index';"],
+      "props": [
+        {
+          "name": "icon",
+          "description": "Icon element to display (img or svg)",
+          "type": "ReactElement",
+          "default": "undefined",
+          "required": true
+        },
+        {
+          "name": "behavior",
+          "description": "Controls button expansion state",
+          "type": "'expanded' | 'collapsed'",
+          "default": "'expanded'",
+          "required": false
+        },
+        {
+          "name": "className",
+          "description": "Custom CSS class",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "hierarchy",
+          "description": "Button style hierarchy",
+          "type": "'loud' | 'quiet'",
+          "default": "'loud'",
+          "required": false
+        },
+        {
+          "name": "id",
+          "description": "Unique identifier",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "onClick",
+          "description": "Click handler function",
+          "type": "function(event)",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "size",
+          "description": "Size of the floating action button",
+          "type": "'small' | 'large'",
+          "default": "'large'",
+          "required": false
+        },
+        {
+          "name": "text",
+          "description": "Text label for expanded state",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        },
+        {
+          "name": "srLabel",
+          "description": "Screen reader label for accessibility",
+          "type": "string",
+          "default": "undefined",
+          "required": false
+        }
+      ],
+      "size_specifications": {
+        "component_heights": {
+          "small": "32px",
+          "large": "48px"
+        },
+        "component_widths": {
+          "collapsed_small": "32px",
+          "collapsed_large": "48px",
+          "expanded": "auto (based on text + padding)"
+        },
+        "border_radius": {
+          "small": "16px (andes-button-border-radius-sm)",
+          "large": "24px (andes-button-border-radius-lg)"
+        },
+        "padding": {
+          "default": "14px (andes-button-padding-lg)"
+        },
+        "layout": {
+          "display": "inline-flex",
+          "align_items": "center",
+          "justify_content": "center",
+          "direction": "icon left, text right (when expanded)"
+        }
+      },
+      "notes": [
+        "Circular shape with high border radius for floating appearance",
+        "Supports both icon-only (collapsed) and icon+text (expanded) states",
+        "Typically positioned fixed for floating behavior",
+        "Only supports small and large sizes (no medium)",
+        "Icon is always required, text is optional for expanded state"
+      ],
+      "data_attributes": [
+        "aria-label for accessibility when no text is provided",
+        "data-behavior for expanded/collapsed state"
+      ],
+      "examples": [
+        {
+          "title": "Floating Action Button",
+          "code": "import { FloatingActionButton } from '@andes/button';\nimport Add16 from '@andes/icons/Add16';\n\n<FloatingActionButton\n  icon={<Add16 />}\n  text=\"Add item\"\n  behavior=\"expanded\"\n  onClick={() => console.log('Add clicked')}\n/>"
+        },
+        {
+          "title": "Collapsed FAB",
+          "code": "import { FloatingActionButton } from '@andes/button';\nimport Add16 from '@andes/icons/Add16';\n\n<FloatingActionButton\n  icon={<Add16 />}\n  behavior=\"collapsed\"\n  srLabel=\"Add new item\"\n  onClick={() => console.log('Add clicked')}\n/>"
         }
       ]
     },
