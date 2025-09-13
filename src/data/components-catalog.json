@@ -131,6 +131,21 @@
           "medium": "5px (border-radius-5)",
           "large": "6px (border-radius-6)"
         },
+        "spacing": {
+          "icon_text_spacing_large": "12px (button-spacing-12)",
+          "icon_text_spacing_medium": "8px (button-spacing-8)",
+          "icon_text_spacing_small": "8px (button-spacing-8)"
+        },
+        "icon_sizes": {
+          "recommended": "18px (button-icon-size)"
+        },
+        "layout": {
+          "display": "inline-block",
+          "flex_direction": "row",
+          "align_items": "center",
+          "justify_content": "center",
+          "direction": "icon left, text center, or text only"
+        },
         "colors": {
           "states": {
             "idle": {
@@ -142,20 +157,48 @@
               "loud": "blue-600 background, white text",
               "quiet": "blue-200 background, blue-500 text",
               "mute": "blue-100 background, blue-500 text"
+            },
+            "active": {
+              "loud": "blue-700 background, white text",
+              "quiet": "blue-300 background, blue-500 text",
+              "mute": "blue-200 background, blue-500 text"
+            },
+            "disabled": {
+              "loud": "gray-100 background, disabled text color",
+              "quiet": "gray-100 background, disabled text color",
+              "mute": "transparent background, disabled text color"
             }
+          },
+          "variants": {
+            "complexBackground": "Darker variants for use on colored backgrounds with adjusted opacity"
           }
-        }
+        },
+        "breakpoints": {}
       },
       "notes": [
         "Uses semibold font weight (font-weight-semibold) for all sizes",
         "Supports loading state with animated spinner overlay",
         "Box-shadow focus ring with blue-300 color for accessibility",
-        "Smooth transitions (0.18s ease-out) for background and color changes"
+        "Smooth transitions (0.18s ease-out) for background and color changes",
+        "Icon size automatically constrained to 18px maximum",
+        "Text truncation with ellipsis for overflow content",
+        "Keyboard navigation and screen reader support included",
+        "Complex background variants provide better contrast on colored surfaces",
+        "Loading state includes translateIn/translateOut animations",
+        "Border transparent for all states to maintain consistent sizing"
+      ],
+      "data_attributes": [
+        "aria-disabled for disabled state",
+        "role and accessibility attributes for screen readers"
       ],
       "examples": [
         {
           "title": "Basic Button",
           "code": "import { Button } from '@andes/button';\n\n<Button hierarchy=\"loud\">Sign up</Button>"
+        },
+        {
+          "title": "Button with Icon",
+          "code": "import { Button, ButtonText } from '@andes/button';\nimport Attach24 from '@andes/icons/Attach24';\n\n<Button>\n  <Attach24 color=\"white\" />\n  <ButtonText>Attach document</ButtonText>\n</Button>"
         },
         {
           "title": "Loading Button",
@@ -185,14 +228,16 @@
         "layout": {
           "display": "block",
           "text_overflow": "ellipsis",
-          "white_space": "nowrap"
+          "white_space": "nowrap",
+          "direction": "Handles text truncation and spacing with adjacent icons"
         }
       },
       "notes": [
-        "Automatically handles spacing when used with icons",
+        "Automatically handles spacing when used with icons (12px margin for large, 8px for medium/small)",
         "Provides text overflow ellipsis for long content",
         "Flex: 1 to take available space in button layout"
       ],
+      "data_attributes": [],
       "examples": [
         {
           "title": "ButtonText with Icon",
@@ -310,10 +355,7 @@
         "Accessible menu dialog with proper ARIA attributes",
         "Only supports medium and large sizes"
       ],
-      "data_attributes": [
-        "aria-disabled for disabled state",
-        "role and accessibility attributes for screen readers"
-      ],
+      "data_attributes": [],
       "examples": [
         {
           "title": "Basic Dropdown",
@@ -405,10 +447,7 @@
         "Supports both loud and quiet hierarchies",
         "Menu positioning optimized for split button layout"
       ],
-      "data_attributes": [
-        "aria-disabled for disabled state",
-        "role and accessibility attributes for screen readers"
-      ],
+      "data_attributes": [],
       "examples": [
         {
           "title": "Split Button",
