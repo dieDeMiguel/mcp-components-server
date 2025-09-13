@@ -30,20 +30,27 @@ export default function listComponents({
   try {
     const components = findComponents(query, tags, packageFilter);
     
-    // Format for VCP compatibility - only name, description, package
-    const items = components.map(comp => ({
-      name: comp.name,
-      description: comp.description,
-      package: comp.package,
-    }));
+    // Group by component name and only show base variants for list
+    const uniqueComponents = new Map();
+    
+    components.forEach(comp => {
+      if (!uniqueComponents.has(comp.name) || comp.variant === null) {
+        uniqueComponents.set(comp.name, {
+          name: comp.name,
+          description: comp.description,
+          purpose: comp.description // Andes DS format uses 'purpose' field
+        });
+      }
+    });
+    
+    // Convert to array format expected by Andes DS
+    const items = Array.from(uniqueComponents.values());
     
     return {
       content: [
         {
           type: "text",
-          text: JSON.stringify({
-            items,
-          }, null, 2),
+          text: JSON.stringify(items, null, 2),
         },
       ],
     };

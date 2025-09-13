@@ -16,25 +16,26 @@ export function findComponents(query?: string, tags?: string[], packageFilter?: 
   const catalog = loadCatalog();
   let components = catalog.components;
   
-  // Filter by package
-  if (packageFilter) {
-    components = components.filter(comp => comp.package === packageFilter);
-  }
-  
-  // Filter by tags
-  if (tags && tags.length > 0) {
-    components = components.filter(comp =>
-      tags.some(tag => comp.tags.includes(tag))
-    );
-  }
-  
-  // Filter by query (search in name and description)
+  // Filter by name if query is provided (exact or partial match)
   if (query) {
     const searchTerm = query.toLowerCase();
     components = components.filter(comp =>
       comp.name.toLowerCase().includes(searchTerm) ||
       comp.description.toLowerCase().includes(searchTerm)
     );
+  }
+  
+  // Filter by package (using import field for new format)
+  if (packageFilter) {
+    components = components.filter(comp => 
+      comp.import && comp.import.includes(packageFilter)
+    );
+  }
+  
+  // Filter by tags (not implemented in new format yet, but keeping for compatibility)
+  if (tags && tags.length > 0) {
+    // In the new format, we could add tags later if needed
+    // For now, just return all components
   }
   
   return components;

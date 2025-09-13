@@ -19,22 +19,28 @@ export interface ComponentStyle {
 
 export interface ComponentSpec {
   name: string;
-  package: string;
-  version: string;
+  variant: string | null;
   description: string;
-  language: string;
-  style: ComponentStyle;
+  import: string;
+  styles: string[];
   props: ComponentProp[];
-  variants: ComponentVariant[];
-  code: string;
-  assets: string[];
-  tags: string[];
-  dependencies: string[];
+  size_specifications?: any;
+  notes?: string[];
+  examples?: Array<{
+    title: string;
+    code: string;
+  }>;
 }
 
 export interface ComponentCatalog {
-  version: string;
   components: ComponentSpec[];
+  metadata: {
+    version: string;
+    lastUpdated: string;
+    totalComponents: number;
+    packages: string[];
+    tags: string[];
+  };
 }
 
 export interface ListComponentsRequest {

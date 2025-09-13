@@ -2,133 +2,314 @@
   "components": [
     {
       "name": "Button",
-      "package": "@andes/button",
-      "version": "9.0.0",
-      "description": "Action trigger with various visual states, maintaining brand identity",
-      "language": "tsx",
-      "style": { 
-        "type": "scss", 
-        "entries": ["@andes/button/index"] 
-      },
+      "variant": null,
+      "description": "Base button component with support for multiple hierarchies, sizes, loading states, and full accessibility features. Supports text-only buttons and buttons with icons.",
+      "import": "import { Button } from '@andes/button';",
+      "styles": ["@import '@andes/button/index';"],
       "props": [
         {
           "name": "children",
+          "description": "Custom content - text or complex content including icons",
           "type": "ReactNode",
-          "required": true,
-          "description": "Button content - text or complex content including icons"
+          "default": "undefined",
+          "required": true
         },
         {
           "name": "hierarchy",
+          "description": "Style hierarchy of the button",
           "type": "'loud' | 'quiet' | 'mute' | 'transparent'",
-          "required": false,
-          "default": "loud",
-          "description": "Style hierarchy of the button"
+          "default": "'loud'",
+          "required": false
         },
         {
           "name": "size",
+          "description": "Size of the button element",
           "type": "'small' | 'medium' | 'large'",
-          "required": false,
-          "default": "large",
-          "description": "Size of the button element"
+          "default": "'large'",
+          "required": false
         },
         {
           "name": "disabled",
+          "description": "Whether the button should be disabled",
           "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "Whether the button should be disabled"
+          "default": "false",
+          "required": false
         },
         {
           "name": "loading",
+          "description": "Shows loading state with progress indicator circular component",
           "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "Shows loading state with progress indicator circular component"
+          "default": "false",
+          "required": false
         },
         {
           "name": "fullWidth",
+          "description": "Whether the button should use full available width",
           "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "Whether the button should use full available width"
+          "default": "false",
+          "required": false
         },
         {
           "name": "onClick",
+          "description": "Callback function called when button is clicked",
           "type": "function(event)",
-          "required": false,
-          "description": "Callback function called when button is clicked"
+          "default": "undefined",
+          "required": false
         }
       ],
-      "variants": [
+      "size_specifications": {
+        "component_heights": {
+          "small": "24px",
+          "medium": "32px",
+          "large": "48px"
+        },
+        "component_widths": {
+          "default": "auto",
+          "fullWidth": "100%"
+        },
+        "padding": {
+          "small": "0 8px (andes-spacing-8)",
+          "medium": "0 12px (andes-spacing-12)",
+          "large": "0 24px (andes-spacing-24)"
+        },
+        "typography_tokens": {
+          "small": "body-small-emphasis (12px font, semibold weight)",
+          "medium": "body-medium-emphasis (14px font, semibold weight)",
+          "large": "body-large-emphasis (16px font, semibold weight)"
+        },
+        "border_radius": {
+          "small": "4px (border-radius-4)",
+          "medium": "5px (border-radius-5)",
+          "large": "6px (border-radius-6)"
+        },
+        "colors": {
+          "states": {
+            "idle": {
+              "loud": "blue-500 background, white text",
+              "quiet": "blue-150 background, blue-500 text",
+              "mute": "transparent background, blue-500 text"
+            },
+            "hover": {
+              "loud": "blue-600 background, white text",
+              "quiet": "blue-200 background, blue-500 text",
+              "mute": "blue-100 background, blue-500 text"
+            }
+          }
+        }
+      },
+      "notes": [
+        "Uses semibold font weight (font-weight-semibold) for all sizes",
+        "Supports loading state with animated spinner overlay",
+        "Box-shadow focus ring with blue-300 color for accessibility",
+        "Smooth transitions (0.18s ease-out) for background and color changes"
+      ],
+      "examples": [
         {
-          "name": "primary",
-          "description": "Primary action button with loud hierarchy",
-          "props": { "hierarchy": "loud", "size": "large" }
+          "title": "Basic Button",
+          "code": "import { Button } from '@andes/button';\n\n<Button hierarchy=\"loud\">Sign up</Button>"
         },
         {
-          "name": "secondary", 
-          "description": "Secondary action button with quiet hierarchy",
-          "props": { "hierarchy": "quiet", "size": "large" }
+          "title": "Loading Button",
+          "code": "import { Button } from '@andes/button';\n\n<Button loading={loading} srAnnouncement=\"Processing...\">\n  Sign Up\n</Button>"
         }
-      ],
-      "code": "import { Button } from '@andes/button';\n\nexport function BasicButton() {\n  return <Button hierarchy=\"loud\">Sign up</Button>;\n}",
-      "tags": ["button", "action", "form", "interactive"],
-      "dependencies": ["@andes/button"]
+      ]
     },
     {
-      "name": "Badge",
-      "package": "@andes/badge",
-      "version": "9.0.0",
-      "description": "Small indicator for statuses, counts, or new content",
-      "language": "tsx",
-      "style": {
-        "type": "scss",
-        "entries": ["@andes/badge/index"]
-      },
+      "name": "Button",
+      "variant": "ButtonText",
+      "description": "Helper component for text content within buttons, especially when combining with icons or other elements.",
+      "import": "import { ButtonText } from '@andes/button';",
+      "styles": ["@import '@andes/button/index';"],
       "props": [
         {
           "name": "children",
+          "description": "Text content for the button",
           "type": "ReactNode",
-          "required": true,
-          "description": "Badge content"
+          "default": "undefined",
+          "required": true
+        }
+      ],
+      "size_specifications": {
+        "typography_tokens": {
+          "default": "Inherits from parent button size"
+        },
+        "layout": {
+          "display": "block",
+          "text_overflow": "ellipsis",
+          "white_space": "nowrap"
+        }
+      },
+      "notes": [
+        "Automatically handles spacing when used with icons",
+        "Provides text overflow ellipsis for long content",
+        "Flex: 1 to take available space in button layout"
+      ],
+      "examples": [
+        {
+          "title": "ButtonText with Icon",
+          "code": "import { Button, ButtonText } from '@andes/button';\n\n<Button>\n  <IconComponent />\n  <ButtonText>Button Label</ButtonText>\n</Button>"
+        }
+      ]
+    },
+    {
+      "name": "Badge",
+      "variant": null,
+      "description": "Small indicator for statuses, counts, or new content. Used inline or over other elements to highlight status or notifications.",
+      "import": "import { Badge } from '@andes/badge';",
+      "styles": ["@import '@andes/badge/index';"],
+      "props": [
+        {
+          "name": "children",
+          "description": "Badge content",
+          "type": "ReactNode",
+          "default": "undefined",
+          "required": true
         },
         {
           "name": "variant",
+          "description": "Visual variant of the badge",
           "type": "'default' | 'success' | 'warning' | 'error'",
-          "required": false,
-          "default": "default",
-          "description": "Visual variant of the badge"
+          "default": "'default'",
+          "required": false
         },
         {
           "name": "size",
+          "description": "Size of the badge",
           "type": "'small' | 'medium'",
-          "required": false,
-          "default": "medium",
-          "description": "Size of the badge"
+          "default": "'medium'",
+          "required": false
         }
       ],
-      "variants": [
+      "size_specifications": {
+        "component_heights": {
+          "small": "16px",
+          "medium": "20px"
+        },
+        "padding": {
+          "small": "2px 6px",
+          "medium": "4px 8px"
+        },
+        "typography_tokens": {
+          "small": "caption (11px font, medium weight)",
+          "medium": "body-small (12px font, medium weight)"
+        },
+        "border_radius": {
+          "default": "12px (fully rounded)"
+        },
+        "colors": {
+          "variants": {
+            "default": "gray-100 background, gray-700 text",
+            "success": "green-100 background, green-700 text",
+            "warning": "yellow-100 background, yellow-700 text",
+            "error": "red-100 background, red-700 text"
+          }
+        }
+      },
+      "notes": [
+        "Fully rounded corners for pill-like appearance",
+        "Semantic color variants for different states",
+        "Optimized for inline usage with text content"
+      ],
+      "examples": [
         {
-          "name": "default",
-          "description": "Standard badge for general use",
-          "props": { "variant": "default", "size": "medium" }
+          "title": "Status Badge",
+          "code": "import { Badge } from '@andes/badge';\n\n<Badge variant=\"success\">Active</Badge>"
         },
         {
-          "name": "notification",
-          "description": "Badge for notifications and alerts",
-          "props": { "variant": "error", "size": "small" }
+          "title": "Notification Badge",
+          "code": "import { Badge } from '@andes/badge';\n\n<Badge variant=\"error\" size=\"small\">3</Badge>"
+        }
+      ]
+    },
+    {
+      "name": "Card",
+      "variant": null,
+      "description": "Flexible card container component for displaying content with consistent styling and optional interactive states.",
+      "import": "import { Card } from '@andes/card';",
+      "styles": ["@import '@andes/card/index';"],
+      "props": [
+        {
+          "name": "children",
+          "description": "Card content",
+          "type": "ReactNode",
+          "default": "undefined",
+          "required": true
+        },
+        {
+          "name": "variant",
+          "description": "Visual variant of the card",
+          "type": "'default' | 'outlined' | 'elevated'",
+          "default": "'default'",
+          "required": false
+        },
+        {
+          "name": "padding",
+          "description": "Internal padding size",
+          "type": "'sm' | 'md' | 'lg'",
+          "default": "'md'",
+          "required": false
+        },
+        {
+          "name": "clickable",
+          "description": "Whether the card is clickable",
+          "type": "boolean",
+          "default": "false",
+          "required": false
+        },
+        {
+          "name": "onClick",
+          "description": "Click handler for interactive cards",
+          "type": "function(event)",
+          "default": "undefined",
+          "required": false
         }
       ],
-      "code": "import { Badge } from '@andes/badge';\n\nexport function StatusBadge() {\n  return <Badge variant=\"success\">Active</Badge>;\n}",
-      "tags": ["badge", "indicator", "status", "notification"],
-      "dependencies": ["@andes/badge"]
+      "size_specifications": {
+        "padding": {
+          "sm": "12px",
+          "md": "16px",
+          "lg": "24px"
+        },
+        "border_radius": {
+          "default": "8px (border-radius-8)"
+        },
+        "colors": {
+          "variants": {
+            "default": "white background, subtle border",
+            "outlined": "white background, prominent border",
+            "elevated": "white background, box-shadow elevation"
+          },
+          "states": {
+            "clickable_hover": "gray-50 background"
+          }
+        },
+        "elevation": {
+          "elevated": "0 2px 8px rgba(0, 0, 0, 0.12)"
+        }
+      },
+      "notes": [
+        "Flexible container for grouping related content",
+        "Supports interactive states for clickable cards",
+        "Consistent border radius and spacing system",
+        "Elevation variant provides subtle depth"
+      ],
+      "examples": [
+        {
+          "title": "Basic Card",
+          "code": "import { Card } from '@andes/card';\n\n<Card variant=\"outlined\" padding=\"md\">\n  <h3>Card Title</h3>\n  <p>Card content goes here</p>\n</Card>"
+        },
+        {
+          "title": "Clickable Card",
+          "code": "import { Card } from '@andes/card';\n\n<Card clickable onClick={() => navigate('/details')}>\n  <h3>Interactive Card</h3>\n  <p>Click to navigate</p>\n</Card>"
+        }
+      ]
     }
   ],
   "metadata": {
-    "version": "2.0.0",
-    "lastUpdated": "2025-01-12T10:00:00Z",
-    "totalComponents": 2,
-    "packages": ["@andes/button", "@andes/badge"],
-    "tags": ["button", "badge", "action", "indicator", "form", "interactive", "status", "notification"]
+    "version": "3.0.0",
+    "lastUpdated": "2025-01-12T15:00:00Z",
+    "totalComponents": 4,
+    "packages": ["@andes/button", "@andes/badge", "@andes/card"],
+    "tags": ["button", "badge", "card", "action", "indicator", "container", "form", "interactive", "status", "notification"]
   }
 }

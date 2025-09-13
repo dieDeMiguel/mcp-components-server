@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { type ToolMetadata, type InferSchema } from "xmcp";
-import { getComponent } from "../utils/catalog";
+import { getComponent, findComponents } from "../utils/catalog";
 
 // Define the schema for tool parameters
 export const schema = {
@@ -26,9 +26,9 @@ export default function getComponentTool({
   variant,
 }: InferSchema<typeof schema>) {
   try {
-    const component = getComponent(name);
+    const components = findComponents(name);
     
-    if (!component) {
+    if (components.length === 0) {
       return {
         content: [
           {
@@ -41,27 +41,33 @@ export default function getComponentTool({
       };
     }
     
-    // Format for VCP compatibility - normalized component structure
-    const result = {
-      component: {
-        name: component.name,
-        package: component.package,
-        version: component.version,
-        description: component.description,
-        language: component.language,
-        style: component.style,
-        props: component.props,
-        ...(component.variants && { variants: component.variants }),
-        code: component.code,
-        ...(variant && { selectedVariant: variant }),
-      },
-    };
+    // Filter by variant if specified
+    let filteredComponents = components;
+    if (variant) {
+      filteredComponents = components.filter(comp => 
+        comp.variant === variant || (comp.variant === null && variant === 'base')
+      );
+      
+      if (filteredComponents.length === 0) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                error: `Component "${name}" with variant "${variant}" not found`,
+              }, null, 2),
+            },
+          ],
+        };
+      }
+    }
     
+    // Return in Andes DS format - array of components with full specifications
     return {
       content: [
         {
           type: "text",
-          text: JSON.stringify(result, null, 2),
+          text: JSON.stringify(filteredComponents, null, 2),
         },
       ],
     };
