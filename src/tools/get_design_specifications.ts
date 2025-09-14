@@ -31,16 +31,18 @@ export default function getDesignSpecifications({
 
 > This document defines the foundational rules and implementation guidelines that the LLM must follow when generating interfaces aligned with the Mercado Libre user experience and brand language.
 
-## 🎯 Objective
+## Objective
 
 Generate functional, production-ready React components that work immediately without additional setup or missing dependencies.
 
-## ⚠️ MANDATORY REQUIREMENTS
+## MANDATORY REQUIREMENTS
 
-### 📦 Dependencies and Imports
+### Dependencies and Imports
 
-- **ALWAYS include clsx**: All components MUST use \`clsx\` for conditional class names
-- **ALWAYS provide clsx**: Include \`clsx\` in package.json dependencies when generating projects
+- **MANDATORY**: \`clsx\` MUST ALWAYS be installed - All components use \`clsx\` for conditional class names
+- **MANDATORY**: Include \`clsx\` in package.json dependencies for every project
+- **CONDITIONAL**: Only install other dependencies when MCP response includes \`required_dependencies\` or \`package_json_dependencies\`
+- **CONDITIONAL**: Only create helper files when MCP response includes \`helper_components\` and they are actually needed by the component
 - **Required dependencies for projects**:
   \`\`\`json
   {
@@ -51,9 +53,59 @@ Generate functional, production-ready React components that work immediately wit
   }
   \`\`\`
 
-### 🔄 Helper Components
+### Processing MCP Response
 
-When components require helper components (like Spinner for loading states), **ALWAYS provide them**:
+When receiving a component from MCP, follow this order:
+
+1. **MANDATORY**: Always install \`clsx\` first - \`pnpm add clsx\`
+2. **CONDITIONAL**: Check for \`required_dependencies\` → Only install if present and needed
+3. **CONDITIONAL**: Check for \`helper_components\` → Only create if present and component actually uses them
+4. **Create main component** → Use the component specifications
+5. **Follow \`setup_instructions\`** → Complete any additional setup steps
+
+Example MCP response processing:
+\`\`\`typescript
+// 1. MANDATORY: Always install clsx
+await executeCommand('pnpm add clsx');
+
+// 2. CONDITIONAL: Install other dependencies only if needed
+if (mcpResponse.required_dependencies) {
+  Object.keys(mcpResponse.required_dependencies).forEach(dep => {
+    // Run: pnpm add [dep] only if not already installed
+  });
+}
+
+// 3. CONDITIONAL: Create helper components only if needed
+if (mcpResponse.helper_components && componentNeedsHelpers(mcpResponse.components)) {
+  mcpResponse.helper_components.forEach(helper => {
+    helper.files.forEach(file => {
+      // Create file at file.path with file.content
+    });
+  });
+}
+
+// 4. Create main component
+// Use mcpResponse.components[0] specifications
+\`\`\`
+
+### When NOT to Install Files
+
+**DO NOT install dependencies or create files unless:**
+- \`clsx\` is missing (always install this)
+- Component actually uses the helper component (check imports in component code)
+- MCP response explicitly includes \`required_dependencies\` for that specific component
+- Component has \`loading\` prop and needs Spinner
+- Component has \`href\` prop and needs link functionality
+
+**Examples of when to skip:**
+- Badge component → No additional dependencies needed
+- Card component → No helper components needed  
+- Button without loading prop → No Spinner needed
+- Components that don't import helper files → Don't create them
+
+### Helper Components
+
+When components require helper components (like Spinner for loading states), **provide them only when needed**:
 
 #### Spinner Component
 \`\`\`tsx
@@ -131,7 +183,7 @@ export default Spinner;
 }
 \`\`\`
 
-### 🎨 Design System Principles
+### Design System Principles
 
 #### Color System
 Use CSS custom properties for consistent theming:
@@ -187,7 +239,7 @@ Use CSS custom properties for consistent theming:
 }
 \`\`\`
 
-### 🏗️ Component Implementation Rules
+### Component Implementation Rules
 
 #### 1. File Structure
 \`\`\`
@@ -226,7 +278,43 @@ const ComponentName = forwardRef<HTMLElement, ComponentNameProps>(
 
 ComponentName.displayName = 'ComponentName';
 
+// CRITICAL: Always use default export to prevent import/export errors
 export default ComponentName;
+\`\`\`
+
+#### 3. Export/Import Rules (CRITICAL for preventing React runtime errors)
+
+**MANDATORY Export Rules:**
+- **ALWAYS use default export**: \`export default ComponentName;\`
+- **NEVER use named exports** for main components: \`export { ComponentName };\` (WRONG)
+- **Always set displayName**: \`ComponentName.displayName = 'ComponentName';\`
+- **Validate component is function**: Component must be a React function/forwardRef, not an object
+
+**MANDATORY Import Rules:**
+- **Use default import**: \`import ComponentName from './ComponentName';\`
+- **NEVER use named import** for main components: \`import { ComponentName } from './ComponentName';\` (WRONG)
+- **Verify import path**: Ensure file exists and has default export
+- **Check for typos**: Component name must match exactly
+
+**Page Component Rules:**
+\`\`\`tsx
+// CORRECT: app/page.tsx
+import React from 'react';
+import Button from '../components/Button/Button'; // Default import
+
+export default function Page() { // Default export
+  return (
+    <div>
+      <Button>Click me</Button>
+    </div>
+  );
+}
+
+// WRONG: Missing default export
+export function Page() { ... }
+
+// WRONG: Named import for component
+import { Button } from '../components/Button/Button';
 \`\`\`
 
 #### 3. CSS Module Template
@@ -254,7 +342,7 @@ export default ComponentName;
 .component[data-loading="true"] { }
 \`\`\`
 
-### 📋 Button-Specific Implementation
+### Button-Specific Implementation
 
 #### Button Component Structure
 \`\`\`tsx
@@ -334,10 +422,16 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = 'Button';
 
+// CRITICAL: Validate component is function to prevent runtime errors
+if (typeof Button !== 'function') {
+  throw new Error('Button must be a function component');
+}
+
+// CRITICAL: Always use default export to prevent import/export errors
 export default Button;
 \`\`\`
 
-### 🎯 Critical Implementation Guidelines
+### Critical Implementation Guidelines
 
 1. **Always use \`clsx\`** for conditional class names
 2. **Always provide helper components** (Spinner, etc.) when needed
@@ -350,7 +444,7 @@ export default Button;
 9. **Handle loading states** with proper spinner integration
 10. **Support all documented props** from the component specification
 
-### 📦 Package.json Template
+### Package.json Template
 
 When generating a new project, always include:
 \`\`\`json
@@ -371,7 +465,7 @@ When generating a new project, always include:
 }
 \`\`\`
 
-### 🚀 Next.js Configuration
+### Next.js Configuration
 
 Include proper TypeScript configuration:
 \`\`\`json
@@ -402,16 +496,108 @@ Include proper TypeScript configuration:
 }
 \`\`\`
 
-## ✅ Success Criteria
+### Component Validation (CRITICAL for preventing runtime errors)
+
+**Before generating any component, validate:**
+
+1. **Component Function Validation:**
+\`\`\`typescript
+// VALID: Function component
+const Button = (props) => <button {...props} />;
+
+// VALID: forwardRef component  
+const Button = forwardRef((props, ref) => <button ref={ref} {...props} />);
+
+// INVALID: Object instead of function
+const Button = { render: () => <button /> }; // This causes "got: object" error
+\`\`\`
+
+2. **Export Validation:**
+\`\`\`typescript
+// VALID: Default export of function
+export default Button;
+
+// INVALID: Named export (causes import issues)
+export { Button };
+
+// INVALID: Exporting object
+export default { Button };
+\`\`\`
+
+3. **Import Path Validation:**
+\`\`\`typescript
+// VALID: Correct relative path
+import Button from '../components/Button/Button';
+
+// INVALID: Wrong path (file doesn't exist)
+import Button from '../components/Button'; // Missing /Button
+
+// INVALID: Named import for default export
+import { Button } from '../components/Button/Button';
+\`\`\`
+
+### Common Error Prevention
+
+**To prevent "React.jsx: type is invalid" errors:**
+
+- **Always check**: Component is a function, not an object
+- **Always use**: Default exports for components
+- **Always verify**: Import paths are correct
+- **Always set**: displayName for debugging
+- **Always test**: Component renders before using in pages
+
+**Error Detection Template:**
+\`\`\`typescript
+// Add this validation in generated components
+if (typeof ComponentName !== 'function') {
+  throw new Error('ComponentName must be a function component');
+}
+\`\`\`
+
+## Success Criteria
 
 A successful implementation should:
-- ✅ Compile without errors
-- ✅ Include all required dependencies
-- ✅ Work immediately after generation
-- ✅ Follow Mercado Libre design principles
-- ✅ Include proper accessibility features
-- ✅ Support all documented component props
-- ✅ Use consistent naming and file structure
+- Compile without errors
+- Include all required dependencies
+- Work immediately after generation
+- Follow Mercado Libre design principles
+- Include proper accessibility features
+- Support all documented component props
+- Use consistent naming and file structure
+- **Use default exports to prevent runtime errors**
+- **Have correct import/export patterns**
+- **Be valid React function components**
+
+## CRITICAL WORKFLOW FOR AI AGENTS
+
+When an AI agent fetches a component from MCP:
+
+1. **STEP 1: Check Response Structure**
+   - Look for \`required_dependencies\` → Install these first
+   - Look for \`helper_components\` → Create these files
+   - Look for \`setup_instructions\` → Follow exactly
+   - Look for \`critical_notes\` → Pay attention to warnings
+
+2. **STEP 2: Validate Component Code**
+   - If component imports '../Spinner/Spinner' → Create Spinner.tsx and Spinner.module.css
+   - If component uses 'clsx' → Install clsx package
+   - If component uses any '../Something' import → Create Something files
+
+3. **STEP 3: Installation Order**
+   \`\`\`bash
+   # ALWAYS this order:
+   1. pnpm add clsx (if component uses clsx)
+   2. Create helper component files (if any imports)
+   3. Create main component files
+   4. Test compilation
+   \`\`\`
+
+4. **STEP 4: Verification**
+   - Check that all imports resolve
+   - Check that all dependencies are installed
+   - Check that component compiles without errors
+
+**FAILURE TO FOLLOW THIS WORKFLOW WILL RESULT IN "Module not found" ERRORS**
 `;
 
   return {
