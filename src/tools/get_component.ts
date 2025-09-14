@@ -107,9 +107,13 @@ export default function getComponentTool({
       ];
 
       response.critical_notes = [
-        "WARNING: This component imports '../Spinner/Spinner' - you MUST create Spinner.tsx and Spinner.module.css",
-        "WARNING: This component uses 'clsx' - you MUST install it with: pnpm add clsx",
-        "WARNING: Missing any of these files will cause 'Module not found' errors"
+        "CRITICAL IMPORT REQUIREMENTS:",
+        "1. This component imports '../Spinner/Spinner' - you MUST create Spinner.tsx and Spinner.module.css",
+        "2. This component uses 'clsx' - you MUST install it with: pnpm add clsx",
+        "3. Use EXACT import syntax: import clsx from 'clsx'; (NOT named import)",
+        "4. Use EXACT import syntax: import Spinner from '../Spinner/Spinner'; (NOT named import)",
+        "5. CSS modules: import styles from './Component.module.css'; (default import)",
+        "WARNING: Missing any of these files or wrong import syntax will cause 'Module not found' errors"
       ];
       
       response.helper_components = [
@@ -119,7 +123,8 @@ export default function getComponentTool({
           files: [
             {
               path: "components/Spinner/Spinner.tsx",
-              content: `import React from 'react';
+              content: `// CRITICAL: Use exact import syntax - default imports only
+import React from 'react';
 import styles from './Spinner.module.css';
 
 interface SpinnerProps {
@@ -142,6 +147,7 @@ const Spinner: React.FC<SpinnerProps> = ({
 };
 
 Spinner.displayName = 'Spinner';
+// CRITICAL: Use default export (NOT named export)
 export default Spinner;`
             },
             {

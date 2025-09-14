@@ -53,6 +53,170 @@ Generate functional, production-ready React components that work immediately wit
   }
   \`\`\`
 
+### CRITICAL: Import Statement Rules
+
+**ALWAYS follow these EXACT import patterns to avoid "Module not found" errors:**
+
+#### 1. React Imports (MANDATORY)
+\`\`\`typescript
+import React from 'react';
+// For TypeScript projects, also import types:
+import type { ReactNode, MouseEvent } from 'react';
+\`\`\`
+
+#### 2. clsx Import (MANDATORY when using clsx)
+\`\`\`typescript
+import clsx from 'clsx';
+// NOT: import { clsx } from 'clsx'; ❌
+// NOT: import * as clsx from 'clsx'; ❌
+\`\`\`
+
+#### 3. CSS Module Imports (when using CSS modules)
+\`\`\`typescript
+import styles from './ComponentName.module.css';
+// File must exist at: ./ComponentName.module.css
+\`\`\`
+
+#### 4. Helper Component Imports (CRITICAL)
+When MCP response includes helper_components, use EXACT paths:
+\`\`\`typescript
+// If helper component path is "components/Spinner/Spinner.tsx"
+import Spinner from '../Spinner/Spinner';
+// NOT: import { Spinner } from '../Spinner/Spinner'; ❌
+// NOT: import Spinner from '../Spinner'; ❌
+\`\`\`
+
+#### 5. Andes UI Component Imports (from catalog)
+Use the EXACT import statement from the component catalog:
+\`\`\`typescript
+// Example from catalog: "import": "import { Button } from '@andes/button';"
+import { Button } from '@andes/button';
+
+// Multiple components from same package:
+import { Button, ButtonText } from '@andes/button';
+
+// With CSS imports:
+import { Card } from '@andes/card';
+// Also include: @import '@andes/card/index'; in your CSS
+\`\`\`
+
+**CRITICAL**: Always copy the import statement EXACTLY as shown in the component's "import" field from the catalog.
+
+#### 6. Icon Imports (when using icons)
+\`\`\`typescript
+// For Andes icons
+import { IconName } from '@andes/icons';
+// For custom icons
+import IconComponent from './icons/IconName';
+\`\`\`
+
+### Import Statement Validation Checklist
+
+Before generating any component, verify:
+- [ ] React import is present: \`import React from 'react';\`
+- [ ] clsx import uses default import: \`import clsx from 'clsx';\`
+- [ ] All relative imports have corresponding files in helper_components
+- [ ] CSS module imports match actual file paths
+- [ ] Andes component imports match catalog exactly
+- [ ] No missing file extensions in imports
+- [ ] No circular import dependencies
+
+### COMMON IMPORT ERRORS TO AVOID
+
+#### ❌ Wrong clsx Import
+\`\`\`typescript
+// WRONG - will cause runtime error
+import { clsx } from 'clsx';
+
+// CORRECT - default import
+import clsx from 'clsx';
+\`\`\`
+
+#### ❌ Wrong Helper Component Import
+\`\`\`typescript
+// WRONG - named import when it should be default
+import { Spinner } from '../Spinner/Spinner';
+
+// WRONG - missing file extension in path
+import Spinner from '../Spinner';
+
+// CORRECT - default import with full path
+import Spinner from '../Spinner/Spinner';
+\`\`\`
+
+#### ❌ Wrong CSS Module Import
+\`\`\`typescript
+// WRONG - named import for CSS modules
+import { styles } from './Button.module.css';
+
+// CORRECT - default import for CSS modules
+import styles from './Button.module.css';
+\`\`\`
+
+#### ❌ Missing React Import
+\`\`\`typescript
+// WRONG - JSX without React import (will fail in some setups)
+const Button = () => <button>Click me</button>;
+
+// CORRECT - Always import React
+import React from 'react';
+const Button = () => <button>Click me</button>;
+\`\`\`
+
+#### ❌ Inconsistent File Paths
+\`\`\`typescript
+// If helper_components specifies: "components/Spinner/Spinner.tsx"
+// WRONG - different path structure
+import Spinner from './Spinner/Spinner';
+
+// CORRECT - match the helper_components path exactly
+import Spinner from '../Spinner/Spinner';
+\`\`\`
+
+### IMPORT ORDER AND ORGANIZATION
+
+Always organize imports in this exact order:
+\`\`\`typescript
+// 1. React imports (always first)
+import React from 'react';
+import type { ReactNode, MouseEvent } from 'react';
+
+// 2. External library imports
+import clsx from 'clsx';
+
+// 3. Andes UI component imports (from catalog)
+import { Button } from '@andes/button';
+import { Card } from '@andes/card';
+
+// 4. Helper component imports (relative paths)
+import Spinner from '../Spinner/Spinner';
+import Icon from '../Icon/Icon';
+
+// 5. CSS imports (always last)
+import styles from './ComponentName.module.css';
+\`\`\`
+
+### FILE STRUCTURE REQUIREMENTS
+
+When creating components, follow this structure:
+\`\`\`
+project/
+├── components/
+│   ├── Button/
+│   │   ├── Button.tsx          // Main component
+│   │   └── Button.module.css   // Component styles
+│   └── Spinner/
+│       ├── Spinner.tsx         // Helper component
+│       └── Spinner.module.css  // Helper styles
+└── package.json                // With clsx dependency
+\`\`\`
+
+**Path Resolution Rules:**
+- Main component imports helper: \`import Spinner from '../Spinner/Spinner';\`
+- CSS modules: \`import styles from './ComponentName.module.css';\`
+- Always use relative paths for helper components
+- Always use exact file names (including .tsx/.ts extensions in import paths)
+
 ### Processing MCP Response
 
 When receiving a component from MCP, follow this order:
