@@ -23,7 +23,27 @@ JSON-RPC 2.0 over HTTP POST
 
 ### Available Tools
 
-#### 1\. list_components
+#### 1\. get_design_specifications
+
+Returns implementation specifications and guidance for generating UI using this MCP. Parameters:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "0",
+  "method": "tools/call",
+  "params": {
+    "name": "get_design_specifications",
+    "arguments": {
+      "versions": { "andes": "latest" }
+    }
+  }
+}
+```
+
+Response is a `content` array with a single `text` item containing a markdown string with implementation guidance (imports, dependencies, helper components, validation checklists). The `versions` object is optional and currently used only to echo Andes version in the document header.
+
+#### 2\. list_components
 
 Get all components with optional filtering
 
@@ -43,7 +63,7 @@ Get all components with optional filtering
 }
 ```
 
-#### 2\. get_component
+#### 3\. get_component
 
 Get detailed component specification
 
@@ -71,7 +91,46 @@ Get detailed component specification
 
 ### Response Format
 
-MCP-compatible content array with JSON text payloads containing component metadata, props, variants, and usage information.
+- **Envelope**: All tool responses use the MCP `content` array. Each entry is an object with `{ type: "text", text: string }`.
+- **Text payload**:
+  - `get_design_specifications`: returns a markdown string with implementation guidance. No leading JSON. Consumers should treat `content[0].text` as markdown.
+  - `list_components`: returns a JSON stringified array of simplified components: `[{ name, description, purpose }]`.
+  - `get_component`: returns a JSON stringified object with shape:
+
+```json
+{
+  "components": [ { /* component spec from catalog */ } ],
+  "required_dependencies": { "clsx": "^2.0.0" },
+  "package_json_dependencies": { "clsx": "^2.0.0" },
+  "installation_commands": ["pnpm add clsx", "npm install clsx", "yarn add clsx"],
+  "setup_instructions": ["..."],
+  "critical_notes": ["..."],
+  "helper_components": [
+    {
+      "name": "Spinner",
+      "description": "...",
+      "files": [ { "path": "components/Spinner/Spinner.tsx", "content": "..." }, { "path": "components/Spinner/Spinner.module.css", "content": "..." } ]
+    }
+  ]
+}
+```
+
+Notes:
+- `required_dependencies`, `installation_commands`, `setup_instructions`, `critical_notes`, and `helper_components` are included conditionally based on the component (e.g., present for `Button`).
+- The `text` field is JSON as a string; consumers should parse it to an object when needed.
+
+### Legacy Tool Name Mapping
+
+If you previously integrated with Andes-prefixed tool names, use this mapping:
+
+- `andes-design-specifications` → `get_design_specifications`
+- `andes-components-list` → `list_components`
+- `andes-components` → `get_component`
+
+Schema differences:
+- `get_design_specifications`: `versions` is optional; there is no separate `version` tool.
+- `list_components`: accepts `{ query?, tags?, packageFilter? }` (no `versions`).
+- `get_component`: accepts `{ name, variant? }` instead of a CSV `componentName`.
 
 ## Development
 
